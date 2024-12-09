@@ -8,41 +8,60 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.news.data.News
-import com.example.news.ui.HomeScreen
+import com.example.news.navigation.NewsBottomNavBar
+import com.example.news.navigation.NewsNavHost
+import com.example.news.ui.home.HomeScreen
+import com.example.news.ui.home.HomeViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsApp(modifier: Modifier = Modifier){
+fun NewsApp(
+    viewModel: HomeViewModel = viewModel(),
+    navController: NavHostController = rememberNavController(),
+    modifier: Modifier = Modifier
+){
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val homeUiState by viewModel.uiState.collectAsState()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
-        topBar = { NewsAppBar(scrollBehaviour = scrollBehaviour) }
+        topBar = { NewsAppBar(scrollBehaviour = scrollBehaviour) },
+        bottomBar = {NewsBottomNavBar(
+            viewModel,
+            navController,
+            homeUiState
+        )}
+
     ) {contentPadding ->
     Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
         ){
-            HomeScreen(
-                listOf(
-                    News("Breaking News", "This is a detailed description of the first news item.", R.drawable.images),
-                    News("Tech Update", "New advancements in technology are being introduced.", R.drawable.images),
-                    News("Sports Highlights", "Catch up on all the latest sports action here.", R.drawable.images)
-                )
+            NewsNavHost(
+                navController,
+                viewModel
             )
         }
     }
 
 }
 
-
+enum class NewsScreen(){
+    Home,
+    Search,
+    Bookmark
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,3 +72,4 @@ fun NewsAppBar(scrollBehaviour: TopAppBarScrollBehavior, modifier: Modifier = Mo
         modifier = modifier
     )
 }
+
