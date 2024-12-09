@@ -51,72 +51,10 @@ fun HomeScreen(newsList: List<News>) {
     }
 }
 
-@Composable
-fun NewsCard(
-    modifier: Modifier = Modifier,
-    news: News,
-    onClick: () -> Unit = {}
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(10.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-    ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(news.image),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .padding(8.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .weight(1f)
-            ) {
-                Text(
-                    text = news.title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = news.desc,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun NewsList(newsList: List<News>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 16.dp)
-    ) {
-        items(newsList) { news ->
-            NewsCard(news = news) {
-                // Handle click event, e.g., navigate to a details screen
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
-fun NewsCardPreview() {
+fun HomeScreenPreview() {
     NewsTheme {
         val newsList = listOf(
             News("Breaking News", "This is a detailed description of the first news item.", R.drawable.images),
@@ -127,3 +65,4 @@ fun NewsCardPreview() {
     }
 
 }
+
