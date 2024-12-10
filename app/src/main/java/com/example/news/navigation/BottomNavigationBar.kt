@@ -66,6 +66,9 @@ fun NewsBottomNavBar(
                     viewModel.updateSelectedScreenIndex(index)
                     navController.navigate(item.title)
                 },
+                label = {
+                    Text(item.title)
+                },
                 icon = {
                     BadgedBox(
                         badge = {

@@ -17,27 +17,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.news.data.News
 import com.example.news.navigation.NewsBottomNavBar
 import com.example.news.navigation.NewsNavHost
-import com.example.news.ui.home.HomeScreen
 import com.example.news.ui.home.HomeViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.news.ui.NewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsApp(
-    viewModel: HomeViewModel = viewModel(),
+    newsViewModel: NewsViewModel = viewModel(factory = NewsViewModel.Factory),
+    homeViewModel: HomeViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ){
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val homeUiState by viewModel.uiState.collectAsState()
+    val homeUiState by homeViewModel.uiState.collectAsState()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = { NewsAppBar(scrollBehaviour = scrollBehaviour) },
         bottomBar = {NewsBottomNavBar(
-            viewModel,
+            homeViewModel,
             navController,
             homeUiState
         )}
@@ -50,7 +50,7 @@ fun NewsApp(
         ){
             NewsNavHost(
                 navController,
-                viewModel
+                newsViewModel
             )
         }
     }
