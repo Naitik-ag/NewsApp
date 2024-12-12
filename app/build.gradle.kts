@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android") version "2.50"
+    id("com.google.devtools.ksp") version "2.0.0-1.0.23"
 }
 
 android {
@@ -58,13 +58,14 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.hilt.android)
     implementation(libs.retrofit)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization.json)
-    kapt(libs.hilt.android.compiler)
     implementation(libs.news.api.java)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler) 
+    implementation(libs.androidx.room.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

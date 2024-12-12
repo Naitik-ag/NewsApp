@@ -1,5 +1,6 @@
 package com.example.news.network
 
+import android.util.Log
 import com.example.news.utils.Constants.API_KEY
 import com.kwabenaberko.newsapilib.NewsApiClient
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest
@@ -11,8 +12,9 @@ import kotlin.coroutines.resumeWithException
 
 class NewsApiService(private val newsApiClient: NewsApiClient) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun getTopHeadlines(): List<News>? = suspendCancellableCoroutine { continuation ->
+    suspend fun getTopHeadlines(category: String): List<News>? = suspendCancellableCoroutine { continuation ->
         val request = TopHeadlinesRequest.Builder()
+            .category(category)
             .language("en")
             .build()
 
@@ -36,7 +38,14 @@ class NewsApiService(private val newsApiClient: NewsApiClient) {
 
             newsApiClient.getEverything(request, object : NewsApiClient.ArticlesResponseCallback {
                 override fun onSuccess(response: ArticleResponse) {
-                    val news = response.articles.map { it.toDomainModel() }
+                    val news = response.articles?.map {
+                        try { it.toDomainModel() }
+                        catch (e: Exception) {
+                            Log.e("Article Mapping", "Error mapping article: ${e.message}", e)
+                            null
+                        }
+                    }?.filterNotNull()
+                        ?: emptyList()
                     continuation.resume(news?: emptyList()) {}
                 }
 

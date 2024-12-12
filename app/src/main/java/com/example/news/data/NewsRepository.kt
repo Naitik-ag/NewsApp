@@ -4,7 +4,7 @@ import com.example.news.network.NewsApiService
 
 interface NewsRepository{
     suspend fun fetchEverything(query: String): List<com.example.news.network.News>
-    suspend fun fetchTopHeadlines(): List<com.example.news.network.News>
+    suspend fun fetchTopHeadlines(category: String): List<com.example.news.network.News>
 }
 
 class NetworkNewsRepository(private val newsApiService: NewsApiService): NewsRepository{
@@ -12,7 +12,7 @@ class NetworkNewsRepository(private val newsApiService: NewsApiService): NewsRep
         return newsApiService.getEverything(query) ?: emptyList()
     }
 
-    override suspend fun fetchTopHeadlines(): List<com.example.news.network.News> {
-        return newsApiService.getTopHeadlines() ?: emptyList()
+    override suspend fun fetchTopHeadlines(category: String): List<com.example.news.network.News> {
+        return newsApiService.getTopHeadlines(category) ?: emptyList()
     }
 }

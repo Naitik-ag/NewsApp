@@ -12,33 +12,42 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.news.NewsApplication
 import com.example.news.data.NewsRepository
 import com.example.news.network.News
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
-    private val _articles = MutableStateFlow<List<News>>(emptyList())
-    val articles : StateFlow<List<News>> = _articles.asStateFlow()
+    private val _homeArticles = MutableStateFlow<List<News>>(emptyList())
+    val homeArticles: StateFlow<List<News>> = _homeArticles
+
+    private val _searchArticles = MutableStateFlow<List<News>>(emptyList())
+    val searchArticles: StateFlow<List<News>> = _searchArticles
 
     init {
-        fetchTopHeadlines()
+        fetchTopHeadlines("general")
     }
 
      fun fetchEverything(query: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                _articles.value = repository.fetchEverything(query)
+                withContext(Dispatchers.Main) {
+                    _searchArticles.value = repository.fetchEverything(query)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    fun fetchTopHeadlines() {
-        viewModelScope.launch {
+    fun fetchTopHeadlines(category: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                _articles.value = repository.fetchTopHeadlines()
+                withContext(Dispatchers.Main) {
+                    _homeArticles.value = repository.fetchTopHeadlines(category)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

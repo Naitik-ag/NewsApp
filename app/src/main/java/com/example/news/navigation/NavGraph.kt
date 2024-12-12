@@ -6,20 +6,18 @@ import androidx.navigation.NavHostController
 import com.example.news.NewsScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.news.R
-import com.example.news.network.News
-import com.example.news.ui.BookmarkScreen
+import com.example.news.ui.bookmark.BookmarkScreen
 import com.example.news.ui.NewsViewModel
 import com.example.news.ui.home.HomeScreen
-import com.example.news.ui.SearchScreen
-import com.example.news.ui.home.HomeViewModel
-
+import com.example.news.ui.search.SearchScreen
+import com.example.news.ui.bookmark.BookmarkViewModel
 
 
 @Composable
 fun NewsNavHost(
     navController: NavHostController,
-    viewModel: NewsViewModel,
+    newsViewModel: NewsViewModel,
+    bookmarkViewModel: BookmarkViewModel,
     modifier: Modifier = Modifier
 ){
     NavHost(
@@ -28,13 +26,13 @@ fun NewsNavHost(
         modifier = modifier
     ){
         composable(route = NewsScreen.Home.name){
-            HomeScreen(viewModel)
+            HomeScreen(newsViewModel)
         }
         composable(route = NewsScreen.Search.name){
-            SearchScreen(viewModel)
+            SearchScreen(newsViewModel)
         }
         composable(route = NewsScreen.Bookmark.name){
-            BookmarkScreen(viewModel)
+            BookmarkScreen(bookmarkViewModel)
         }
     }
 }

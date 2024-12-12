@@ -22,12 +22,14 @@ import com.example.news.navigation.NewsNavHost
 import com.example.news.ui.home.HomeViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.news.ui.NewsViewModel
+import com.example.news.ui.bookmark.BookmarkViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsApp(
     newsViewModel: NewsViewModel = viewModel(factory = NewsViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(),
+    bookmarkViewModel: BookmarkViewModel = viewModel(factory = BookmarkViewModel.Factory),
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ){
@@ -50,7 +52,8 @@ fun NewsApp(
         ){
             NewsNavHost(
                 navController,
-                newsViewModel
+                newsViewModel,
+                bookmarkViewModel
             )
         }
     }
