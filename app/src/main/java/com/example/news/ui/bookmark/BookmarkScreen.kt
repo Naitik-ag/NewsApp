@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavHostController
 import com.example.news.data.bookmarkDatabase.BookmarkEntity
 import com.example.news.network.News
 import com.example.news.ui.NewsList
@@ -37,9 +39,10 @@ fun News.toBookmarkEntity(): BookmarkEntity {
 }
 
 @Composable
-fun BookmarkScreen(viewModel: BookmarkViewModel) {
+fun BookmarkScreen(viewModel: BookmarkViewModel , navController: NavHostController) {
     val bookmark by viewModel.bookmarks.collectAsState()
     val newsList: List<News> = bookmark.map { it.toNews() }
+    val lazyListState = rememberLazyListState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +57,7 @@ fun BookmarkScreen(viewModel: BookmarkViewModel) {
         )
 
         if (bookmark.isNotEmpty()) {
-            NewsList(newsList)
+            NewsList(newsList,lazyListState,navController)
         } else {
             Text(
                 text = "No bookmarks yet.",

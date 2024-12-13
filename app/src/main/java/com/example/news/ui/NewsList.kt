@@ -2,6 +2,8 @@ package com.example.news.ui
 
 import android.content.Intent
 import android.net.Uri
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,8 +45,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.news.NewsScreen
 import com.example.news.R
 import com.example.news.network.News
 import com.example.news.ui.bookmark.BookmarkViewModel
@@ -126,11 +132,14 @@ fun NewsCard(
 
 @Composable
 fun NewsList(
-    newsList: List<News>
+    newsList: List<News>,
+    lazyListState: LazyListState,
+    navController: NavHostController
 ) {
     val bookmarkViewModel: BookmarkViewModel = viewModel(factory = BookmarkViewModel.Factory)
     val context = LocalContext.current
     LazyColumn(
+        state = lazyListState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
@@ -139,8 +148,7 @@ fun NewsList(
             NewsCard(
                 news = news ,
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(news.url))
-                    context.startActivity(intent)
+                    navController.navigate("${NewsScreen.webview.name}/${Uri.encode(news.url)}")
                 } ,
                 onBookmarkClick = {
                     if (bookmarkViewModel.isBookmarked(news)) {
@@ -154,4 +162,6 @@ fun NewsList(
         }
     }
 }
+
+
 

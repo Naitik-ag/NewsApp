@@ -1,4 +1,4 @@
-package com.example.news.navigation
+package com.example.news.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -6,7 +6,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -15,13 +14,9 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.news.NewsScreen
-import com.example.news.ui.home.HomeViewModel
-import com.example.news.ui.home.NewsUiState
+import com.example.news.ui.NewsViewModel
 
 
 data class BottomNavItems(
@@ -33,9 +28,8 @@ data class BottomNavItems(
 )
 @Composable
 fun NewsBottomNavBar(
-    viewModel: HomeViewModel,
-    navController: NavHostController,
-    homeUiState: NewsUiState
+    viewModel: NewsViewModel,
+    navController: NavHostController
 ) {
     val items = listOf(
         BottomNavItems(
@@ -61,7 +55,7 @@ fun NewsBottomNavBar(
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = homeUiState.selectedScreenIndex == index,
+                selected = viewModel.selectedScreenIndex == index,
                 onClick = {
                     viewModel.updateSelectedScreenIndex(index)
                     navController.navigate(item.title)
@@ -83,7 +77,7 @@ fun NewsBottomNavBar(
                         }
                     ) {
                         Icon(
-                            imageVector = if (index == homeUiState.selectedScreenIndex) {
+                            imageVector = if (index == viewModel.selectedScreenIndex) {
                                 item.selectedIcon
                             } else {
                                 item.unselectedIcon

@@ -24,5 +24,4 @@ class DefaultAppContainer(private val context: Context): AppContainer{
     override val bookmarkRepository: BookmarkRepository by lazy {
         OfflineBookmarkRepository(BookmarkDatabase.getDatabase(context).bookmarkDao())
     }
-
 }

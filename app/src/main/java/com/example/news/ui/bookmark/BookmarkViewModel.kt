@@ -21,11 +21,10 @@ class BookmarkViewModel(private val bookmarkRepository: BookmarkRepository) : Vi
     private val _bookmarks = MutableStateFlow<List<BookmarkEntity>>(emptyList())
     val bookmarks: StateFlow<List<BookmarkEntity>> = _bookmarks
 
-
-
     fun isBookmarked(news: News): Boolean {
         return _bookmarks.value.any { it.title == news.title }
     }
+
     init {
         loadBookmarks()
     }

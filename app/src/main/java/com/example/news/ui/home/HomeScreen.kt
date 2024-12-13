@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -21,12 +23,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavHostController
 import com.example.news.R
 import com.example.news.network.News
 import com.example.news.ui.NewsList
@@ -34,12 +38,13 @@ import com.example.news.ui.NewsViewModel
 import com.example.news.ui.bookmark.BookmarkViewModel
 import com.example.news.ui.theme.NewsTheme
 import com.example.news.utils.Constants
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(viewModel: NewsViewModel) {
+fun HomeScreen(viewModel: NewsViewModel , navController: NavHostController) {
     val news by viewModel.homeArticles.collectAsState()
-    var expanded by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf("All") }
+    val lazyListState = rememberLazyListState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,45 +62,64 @@ fun HomeScreen(viewModel: NewsViewModel) {
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)) {
-                Text(
-                    text = selectedCategory,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .clickable { expanded = !expanded }
-                        .padding(8.dp)
-                        .padding(bottom = 16.dp),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                )
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-
-                    Constants.CATEGORIES.forEach { category ->
-                        DropdownMenuItem(
-                            text = { Text(
-                                text = category,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                            ) },
-                            onClick = {
-                                selectedCategory = category
-                                expanded = false
-                                val categoryToFetch = if (category == "All") "general" else category
-                                viewModel.fetchTopHeadlines(categoryToFetch)
-                            }
-                        )
-                    }
-                }
-            }
+            CategoryDropDownMenu(viewModel, lazyListState)
         }
 
         if (news.isEmpty()) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            NewsList(news)
+            NewsList(
+                news,
+                lazyListState,
+                navController
+            )
+
+        }
+    }
+}
+
+@Composable
+fun CategoryDropDownMenu(
+    viewModel: NewsViewModel,
+    lazyListState: LazyListState
+){
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf("All") }
+    val coroutineScope = rememberCoroutineScope()
+    Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)) {
+        Text(
+            text = selectedCategory,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier
+                .clickable { expanded = !expanded }
+                .padding(8.dp)
+                .padding(bottom = 16.dp),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+
+            Constants.CATEGORIES.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(
+                        text = category,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    ) },
+                    onClick = {
+                        selectedCategory = category
+                        expanded = false
+                        val categoryToFetch = if (category == "All") "general" else category
+                        viewModel.fetchTopHeadlines(categoryToFetch)
+                        coroutineScope.launch {
+                            lazyListState.scrollToItem(0)
+                        }
+                    }
+                )
+            }
         }
     }
 }

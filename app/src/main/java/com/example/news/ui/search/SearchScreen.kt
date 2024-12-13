@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -26,13 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavHostController
 import com.example.news.ui.NewsList
 import com.example.news.ui.NewsViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun SearchScreen(viewModel: NewsViewModel) {
+fun SearchScreen(viewModel: NewsViewModel , navController: NavHostController) {
     var searchQuery by remember { mutableStateOf("") }
-
+    var job by remember { mutableStateOf<Job?>(null) }
+    val lazyListState = rememberLazyListState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,12 +59,16 @@ fun SearchScreen(viewModel: NewsViewModel) {
             query = searchQuery,
             onQueryChange = { query ->
                 searchQuery = query
-                viewModel.fetchEverything(query)
+                job?.cancel()
+                job = CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    if(query.isNotEmpty()) viewModel.fetchEverything(query)
+                }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
         val news by viewModel.searchArticles.collectAsState()
-        NewsList(news)
+        NewsList(news,lazyListState,navController)
 
     }
 }

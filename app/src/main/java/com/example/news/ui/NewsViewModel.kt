@@ -2,7 +2,9 @@ package com.example.news.ui
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -26,7 +28,14 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
     private val _searchArticles = MutableStateFlow<List<News>>(emptyList())
     val searchArticles: StateFlow<List<News>> = _searchArticles
 
+    var selectedScreenIndex by mutableStateOf(0)
+
+    fun updateSelectedScreenIndex(index: Int) {
+        selectedScreenIndex = index
+    }
+
     init {
+
         fetchTopHeadlines("general")
     }
 

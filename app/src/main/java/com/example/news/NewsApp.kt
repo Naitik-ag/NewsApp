@@ -17,9 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.news.navigation.NewsBottomNavBar
-import com.example.news.navigation.NewsNavHost
-import com.example.news.ui.home.HomeViewModel
+import com.example.news.ui.navigation.NewsBottomNavBar
+import com.example.news.ui.navigation.NewsNavHost
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.news.ui.NewsViewModel
 import com.example.news.ui.bookmark.BookmarkViewModel
@@ -28,21 +27,20 @@ import com.example.news.ui.bookmark.BookmarkViewModel
 @Composable
 fun NewsApp(
     newsViewModel: NewsViewModel = viewModel(factory = NewsViewModel.Factory),
-    homeViewModel: HomeViewModel = viewModel(),
     bookmarkViewModel: BookmarkViewModel = viewModel(factory = BookmarkViewModel.Factory),
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ){
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val homeUiState by homeViewModel.uiState.collectAsState()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = { NewsAppBar(scrollBehaviour = scrollBehaviour) },
-        bottomBar = {NewsBottomNavBar(
-            homeViewModel,
-            navController,
-            homeUiState
-        )}
+        bottomBar = {
+            NewsBottomNavBar(
+            newsViewModel,
+            navController
+        )
+        }
 
     ) {contentPadding ->
     Surface(
@@ -63,7 +61,8 @@ fun NewsApp(
 enum class NewsScreen(){
     Home,
     Search,
-    Bookmark
+    Bookmark,
+    webview
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,11 +1,13 @@
-package com.example.news.navigation
+package com.example.news.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import com.example.news.NewsScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.news.ui.bookmark.BookmarkScreen
 import com.example.news.ui.NewsViewModel
 import com.example.news.ui.home.HomeScreen
@@ -26,13 +28,23 @@ fun NewsNavHost(
         modifier = modifier
     ){
         composable(route = NewsScreen.Home.name){
-            HomeScreen(newsViewModel)
+            HomeScreen(newsViewModel , navController)
         }
         composable(route = NewsScreen.Search.name){
-            SearchScreen(newsViewModel)
+            SearchScreen(newsViewModel , navController)
         }
         composable(route = NewsScreen.Bookmark.name){
-            BookmarkScreen(bookmarkViewModel)
+            BookmarkScreen(bookmarkViewModel , navController)
+        }
+        composable(
+            route = "${NewsScreen.webview.name}/{url}",
+            arguments = listOf(navArgument("url"){type = NavType.StringType})
+        ){
+            backStackEntry ->
+                val url = backStackEntry.arguments?.getString("url")
+                if (url != null) {
+                    WebView(url)
+                }
         }
     }
 }
