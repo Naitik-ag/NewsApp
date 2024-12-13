@@ -51,6 +51,9 @@ The app uses the **MVVM (Model-View-ViewModel)** architecture:
    ```
 4. Build and run the app on your emulator or device.
 
+## Download APK
+You can download the latest APK from the [Releases](https://github.com/Naitik-ag/NewsApp/tree/main/app/release) section of this repository.
+
 ## Screenshots## Screenshots
 
 ### Home Screen
