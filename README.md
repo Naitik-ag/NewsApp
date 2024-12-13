@@ -54,16 +54,16 @@ The app uses the **MVVM (Model-View-ViewModel)** architecture:
 ## Screenshots## Screenshots
 
 ### Home Screen
-<img src="screenshots/home_screen.png" alt="Home Screen" width="300"/>
+<img src="screenshots/home_screen.jpeg" alt="Home Screen" width="300"/>
 
 ### Search Screen
-<img src="screenshots/search_screen.png" alt="Search Screen" width="300"/>
+<img src="screenshots/search_screen.jpeg" alt="Search Screen" width="300"/>
 
 ### Bookmark Screen
-<img src="screenshots/bookmark_screen.png" alt="Bookmark Screen" width="300"/>
+<img src="screenshots/bookmark_screen.jpeg" alt="Bookmark Screen" width="300"/>
 
 ### WebView Screen
-<img src="screenshots/webview_screen.png" alt="WebView Screen" width="300"/>
+<img src="screenshots/webview_screen.jpeg" alt="WebView Screen" width="300"/>
 
 
 ## Future Enhancements
